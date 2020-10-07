@@ -1,5 +1,5 @@
 {
-  "name": "frontend-project-lvl2",
+  "name": "frontend-project-lvl-2",
   "version": "0.0.1",
   "description": "Compares two configuration files and shows a difference.",
   "main": "index.js",
@@ -7,23 +7,34 @@
     "gendiff": "bin/gendiff.js"
   },
   "type": "module",
+  "engines": {
+    "node": ">=14"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx -n --experimental-vm-modules jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leetvig/frontend-project-lvl2.git"
+    "url": "git+https://github.com/leetvig/frontend-project-lvl-2.git"
   },
   "author": "leetvig",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/leetvig/frontend-project-lvl2/issues"
+    "url": "https://github.com/leetvig/frontend-project-lvl-2/issues"
   },
-  "homepage": "https://github.com/leetvig/frontend-project-lvl2#readme",
+  "homepage": "https://github.com/leetvig/frontend-project-lvl-2#readme",
   "devDependencies": {
+    "@jest/globals": "^26.5.2",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.1"
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.0",
+    "jest": "^26.5.2",
+    "jest-cli": "^26.5.2"
   },
   "dependencies": {
     "commander": "^6.1.0",
