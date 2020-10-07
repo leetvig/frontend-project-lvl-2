@@ -1,6 +1,6 @@
 # Вычислитель отличий
-![Actions Status](https://github.com/leetvig/frontend-project-lvl2/workflows/hexlet-check/badge.svg)
-[![Node.js CI] (https://github.com/leetvig/frontend-project-lvl2/workflows/Node.js%20CI/badge.svg?branch=main)](https://github.com/leetvig/frontend-project-lvl2/actions?query=workflow%3A%22Node.js+CI%22)
+[![Actions Status](https://github.com/leetvig/frontend-project-lvl-2/workflows/hexlet-check/badge.svg)](https://github.com/leetvig/frontend-project-lvl-2/actions?query=workflow%3Ahexlet-check)
+[![Node.js CI](https://github.com/leetvig/frontend-project-lvl-2/workflows/Node.js%20CI/badge.svg)](https://github.com/leetvig/frontend-project-lvl-2/actions?query=workflow%3A%22Node.js+CI%22)
 [![Maintainability](https://api.codeclimate.com/v1/badges/b74102ed30df5a4e7a28/maintainability)](https://codeclimate.com/github/leetvig/frontend-project-lvl-2/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/b74102ed30df5a4e7a28/test_coverage)](https://codeclimate.com/github/leetvig/frontend-project-lvl-2/test_coverage)
 
