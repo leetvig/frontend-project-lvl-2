@@ -21,6 +21,8 @@ npm link
 Различия файлов .json  
 [![asciicast](https://asciinema.org/a/Di8GY2EZUVkgoADW86gQrABEZ.svg)](https://asciinema.org/a/Di8GY2EZUVkgoADW86gQrABEZ)
 
-
 Различия файлов .yaml  
 [![asciicast](https://asciinema.org/a/BJgBCeWHvYR9XV6GRkDGuHqdx.svg)](https://asciinema.org/a/BJgBCeWHvYR9XV6GRkDGuHqdx)
+
+Различия файлов .ini
+[![asciicast](https://asciinema.org/a/deXNbAcPKu9aGsYMydbrxRxg2.svg)](https://asciinema.org/a/deXNbAcPKu9aGsYMydbrxRxg2)

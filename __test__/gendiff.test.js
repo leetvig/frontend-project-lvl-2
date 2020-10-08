@@ -18,14 +18,13 @@ beforeAll(() => {
   expected = readFile('exepted.txt');
 });
 
-test('jsondiff', () => {
-  const filepath1 = getFixturePath('file1.json');
-  const filepath2 = getFixturePath('file2.json');
-  expect(gendiff(filepath1, filepath2)).toEqual(expected);
-});
-
-test('yamldiff', () => {
-  const filepath1 = getFixturePath('file1.yaml');
-  const filepath2 = getFixturePath('file2.yaml');
+test.each`
+  file1           | file2           | format
+  ${'file1.json'} | ${'file2.json'} | ${'json'}
+  ${'file1.yaml'} | ${'file2.yaml'} | ${'yaml'}
+  ${'file1.ini'}  | ${'file2.ini'}  | ${'ini'}
+`('$format diff', ({ file1, file2 }) => {
+  const filepath1 = getFixturePath(file1);
+  const filepath2 = getFixturePath(file2);
   expect(gendiff(filepath1, filepath2)).toEqual(expected);
 });
