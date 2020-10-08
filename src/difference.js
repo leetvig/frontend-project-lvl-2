@@ -1,20 +1,11 @@
 /* eslint no-restricted-syntax: ["off", "ForOfStatement"] */
 
-import fs from 'fs';
-import path from 'path';
 import _ from 'lodash';
-
-const getFullPath = (file) => path.resolve(process.cwd(), file);
-const readData = (file) => fs.readFileSync(getFullPath(file));
-
-const getDataFromJSON = (file) => {
-  const fileData = readData(file);
-  return JSON.parse(fileData);
-};
+import getDataFromFile from './parser.js';
 
 export default (filepath1, filepath2) => {
-  const data1 = getDataFromJSON(filepath1);
-  const data2 = getDataFromJSON(filepath2);
+  const data1 = getDataFromFile(filepath1);
+  const data2 = getDataFromFile(filepath2);
 
   const keys1 = _.keys(data1);
   const keys2 = _.keys(data2);

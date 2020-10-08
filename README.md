@@ -8,7 +8,7 @@
 
 Возможности утилиты:
 
-* Поддержка разных форматов входных форматов: yaml, ini, json
+* Поддержка разных входных форматов: yaml, ini, json
 * Генерация отчета в виде plain text, stylish и json
 
 ### Установка
@@ -16,5 +16,11 @@
 make install
 npm link
 ```
+#### Примеры использования
 
+Различия файлов .json  
 [![asciicast](https://asciinema.org/a/Di8GY2EZUVkgoADW86gQrABEZ.svg)](https://asciinema.org/a/Di8GY2EZUVkgoADW86gQrABEZ)
+
+
+Различия файлов .yaml  
+[![asciicast](https://asciinema.org/a/BJgBCeWHvYR9XV6GRkDGuHqdx.svg)](https://asciinema.org/a/BJgBCeWHvYR9XV6GRkDGuHqdx)

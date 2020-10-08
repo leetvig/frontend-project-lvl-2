@@ -1,6 +1,6 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }] */
 
-import { test, expect } from '@jest/globals';
+import { test, expect, beforeAll } from '@jest/globals';
 import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -12,9 +12,20 @@ const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-test('gendiff', () => {
-  const expected = readFile('exepted_json.txt');
+let expected;
+
+beforeAll(() => {
+  expected = readFile('exepted.txt');
+});
+
+test('jsondiff', () => {
   const filepath1 = getFixturePath('file1.json');
   const filepath2 = getFixturePath('file2.json');
+  expect(gendiff(filepath1, filepath2)).toEqual(expected);
+});
+
+test('yamldiff', () => {
+  const filepath1 = getFixturePath('file1.yaml');
+  const filepath2 = getFixturePath('file2.yaml');
   expect(gendiff(filepath1, filepath2)).toEqual(expected);
 });
