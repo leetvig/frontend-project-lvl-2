@@ -7,13 +7,13 @@ const getFullPath = (file) => path.resolve(process.cwd(), file);
 
 const readData = (file) => fs.readFileSync(getFullPath(file), 'utf-8');
 
-const parser = (data, format) => {
+const parser = (data, extension) => {
   let parse;
-  if (format === '' || format === '.json') {
+  if (extension === '' || extension === '.json') {
     parse = JSON.parse;
-  } else if (format === '.yaml') {
+  } else if (extension === '.yaml') {
     parse = yaml.safeLoad;
-  } else if (format === '.ini') {
+  } else if (extension === '.ini') {
     parse = ini.parse;
   }
   return parse(data);
@@ -21,9 +21,9 @@ const parser = (data, format) => {
 
 const getDataFromFile = (file) => {
   const fileData = readData(file);
-  const format = path.extname(file);
+  const extension = path.extname(file);
 
-  return parser(fileData, format);
+  return parser(fileData, extension);
 };
 
 export default getDataFromFile;
