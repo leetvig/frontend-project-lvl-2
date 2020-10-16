@@ -19,11 +19,11 @@ beforeAll(() => {
 });
 
 test.each`
-  file1           | file2           | format
+  file1           | file2           | extension
   ${'file1.json'} | ${'file2.json'} | ${'json'}
   ${'file1.yaml'} | ${'file2.yaml'} | ${'yaml'}
   ${'file1.ini'}  | ${'file2.ini'}  | ${'ini'}
-`('$format diff', ({ file1, file2 }) => {
+`('$extension diff', ({ file1, file2 }) => {
   const filepath1 = getFixturePath(file1);
   const filepath2 = getFixturePath(file2);
   expect(gendiff(filepath1, filepath2)).toEqual(expected);

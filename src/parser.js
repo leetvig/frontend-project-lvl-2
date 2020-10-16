@@ -9,7 +9,7 @@ const readData = (file) => fs.readFileSync(getFullPath(file), 'utf-8');
 
 const parser = (data, extension) => {
   let parse;
-  if (extension === '' || extension === '.json') {
+  if (extension === '.json') {
     parse = JSON.parse;
   } else if (extension === '.yaml') {
     parse = yaml.safeLoad;
