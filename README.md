@@ -26,3 +26,9 @@ npm link
 
 Различия файлов .ini
 [![asciicast](https://asciinema.org/a/deXNbAcPKu9aGsYMydbrxRxg2.svg)](https://asciinema.org/a/deXNbAcPKu9aGsYMydbrxRxg2)
+
+Различия файлов,имеющие вложенные структуры
+[![asciicast](https://asciinema.org/a/fmFOOKNt46Ok28KdLgRfdBmmm.svg)](https://asciinema.org/a/fmFOOKNt46Ok28KdLgRfdBmmm)
+
+Различия файлов в формате plain
+[![asciicast](https://asciinema.org/a/KGfLrPPR3cn6wjJmloGQDxcDI.svg)](https://asciinema.org/a/KGfLrPPR3cn6wjJmloGQDxcDI)

@@ -12,10 +12,12 @@ const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-let expected;
+let expectedStyle; 
+let expectedPlain;
 
 beforeAll(() => {
-  expected = readFile('exepted.txt');
+  expectedStyle = readFile('exepted_stylish.txt');
+  expectedPlain = readFile('exepted_plain.txt');
 });
 
 test.each`
@@ -23,8 +25,19 @@ test.each`
   ${'file1.json'} | ${'file2.json'} | ${'json'}
   ${'file1.yaml'} | ${'file2.yaml'} | ${'yaml'}
   ${'file1.ini'}  | ${'file2.ini'}  | ${'ini'}
-`('$extension diff', ({ file1, file2 }) => {
+`('stylish $extension diff', ({ file1, file2 }) => {
   const filepath1 = getFixturePath(file1);
   const filepath2 = getFixturePath(file2);
-  expect(gendiff(filepath1, filepath2)).toEqual(expected);
+  expect(gendiff(filepath1, filepath2)).toEqual(expectedStyle);
+});
+
+test.each`
+  file1           | file2           | extension
+  ${'file1.json'} | ${'file2.json'} | ${'json'}
+  ${'file1.yaml'} | ${'file2.yaml'} | ${'yaml'}
+  ${'file1.ini'}  | ${'file2.ini'}  | ${'ini'}
+`('plain $extension diff', ({ file1, file2 }) => {
+  const filepath1 = getFixturePath(file1);
+  const filepath2 = getFixturePath(file2);
+  expect(gendiff(filepath1, filepath2, 'plain')).toEqual(expectedPlain);
 });

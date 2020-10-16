@@ -27,7 +27,7 @@ const stringifyLine = (node, depth) => {
   const currentIndent = indent(depth);
 
   const value = stringify(node.value, depth + 1);
-  let diff = '';
+  let diff;
   switch (node.type) {
     case 'added':
     case 'changed-add':
@@ -43,7 +43,7 @@ const stringifyLine = (node, depth) => {
   return `${currentIndent}${diff} ${node.name}: ${value}`;
 };
 
-const stylish = (tree) => {
+export default (tree) => {
   const iter = (node, depth) => {
     if (node.type !== 'object' && node.type !== 'root') {
       return stringifyLine(node, depth);
@@ -65,5 +65,3 @@ const stylish = (tree) => {
 
   return iter(tree, 0);
 };
-
-export default stylish;

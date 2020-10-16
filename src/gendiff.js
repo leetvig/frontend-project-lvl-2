@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import getDataFromFile from './parser.js';
-import formatter from './formatter/stylish.js';
+import formatter from './formatter/index.js';
 
 const makeInternal = (name, type) => ({
   name,
