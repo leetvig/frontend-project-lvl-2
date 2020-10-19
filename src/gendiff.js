@@ -1,48 +1,39 @@
-/* eslint no-restricted-syntax: ["off", "ForOfStatement"] */
-
 import _ from 'lodash';
 import getDataFromFile from './parser.js';
 import formatter from './formatter/index.js';
 
-const makeInternal = (name, type) => ({
+const makeInternalNode = (name, children = [], type) => ({
   name,
   type,
-  children: [],
+  children,
 });
 
-const makeLeaf = (name, value, type) => ({
+const makeLeafNode = (name, value, type) => ({
   name,
   type,
   value,
 });
 
-const checkDifferences = (fileData1, fileData2) => {
-  const iter = (data1, data2, parent) => {
-    const keys1 = _.keys(data1);
-    const keys2 = _.keys(data2);
-    const keys = _.union(keys1, keys2).sort();
+const checkDifferences = (data1, data2) => {
+  const keys1 = _.keys(data1);
+  const keys2 = _.keys(data2);
+  const keys = _.union(keys1, keys2).sort();
 
-    for (const key of keys) {
-      const value1 = _.cloneDeep(data1[key]);
-      const value2 = _.cloneDeep(data2[key]);
-
-      if (!_.has(data1, key)) {
-        parent.children.push(makeLeaf(key, value2, 'added'));
-      } else if (!_.has(data2, key)) {
-        parent.children.push(makeLeaf(key, value1, 'deleted'));
-      } else if (data1[key] === data2[key]) {
-        parent.children.push(makeLeaf(key, value1, 'unchanged'));
-      } else if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-        parent.children.push(iter(value1, value2, makeInternal(key, 'object')));
-      } else {
-        parent.children.push(makeLeaf(key, value1, 'changed-del'));
-        parent.children.push(makeLeaf(key, value2, 'changed-add'));
-      }
+  const tree = keys.map((key) => {
+    const value1 = _.cloneDeep(data1[key]);
+    const value2 = _.cloneDeep(data2[key]);
+    if (!keys1.includes(key)) {
+      return makeLeafNode(key, value2, 'added');
+    } if (!keys2.includes(key)) {
+      return makeLeafNode(key, value1, 'deleted');
+    } if (value1 === value2) {
+      return makeLeafNode(key, value1, 'unchanged');
+    } if (_.isObject(data1[key]) && _.isObject(data2[key])) {
+      return makeInternalNode(key, checkDifferences(value1, value2), 'internal');
     }
-    return parent;
-  };
-
-  return iter(fileData1, fileData2, makeInternal('root', 'root'));
+    return makeLeafNode(key, [value1, value2], 'changed');
+  });
+  return tree;
 };
 
 export default (filepath1, filepath2, format = 'stylish') => {

@@ -1,65 +1,60 @@
 const indent = (indentSize) => '  '.repeat(indentSize);
 
-const stringify = (value, spacesCount) => {
-  const iter = (currentValue, depth) => {
-    if (typeof currentValue !== 'object') {
-      return currentValue.toString();
-    }
+const stringify = (value, indentSize) => {
+  if (typeof value !== 'object') {
+    return value.toString();
+  }
 
-    const deepIndentSize = depth + 1;
-    const deepIndent = indent(deepIndentSize);
-    const currentIndent = indent(depth);
-    const lines = Object
-      .entries(currentValue)
-      .map(([key, val]) => `${deepIndent}  ${key}: ${iter(val, deepIndentSize + 1)}`);
+  const deepIndentSize = indentSize + 2;
+  const currentIndent = indent(indentSize + 1);
+  const bracketIndent = indent(indentSize);
+
+  const lines = Object
+    .entries(value)
+    .map(([key, val]) => `${currentIndent}  ${key}: ${stringify(val, deepIndentSize)}`);
+
+  return [
+    '{',
+    ...lines,
+    `${bracketIndent}}`,
+  ].join('\n');
+};
+
+const stringifyLine = (node, indentSize) => {
+  const currentIndent = indent(indentSize);
+  const deepIndentSize = indentSize + 1;
+  const { name, type, value } = node;
+  switch (type) {
+    case 'added':
+      return `${currentIndent}+ ${name}: ${stringify(value, deepIndentSize)}`;
+    case 'deleted':
+      return `${currentIndent}- ${name}: ${stringify(value, deepIndentSize)}`;
+    case 'changed':
+      return `${currentIndent}- ${name}: ${stringify(value[0], deepIndentSize)}\n${currentIndent}+ ${name}: ${stringify(value[1], deepIndentSize)}`;
+    case 'unchanged':
+    default:
+      return `${currentIndent}  ${name}: ${stringify(value, deepIndentSize)}`;
+  }
+};
+
+export default (tree) => {
+  const iter = (children, indentSize) => {
+    const deepIndentSize = indentSize + 2;
+    const currentIndentSize = indentSize + 1;
+    const currentIndent = indent(currentIndentSize);
+    const bracketIndent = indent(indentSize);
+
+    const lines = children.flatMap((child) => {
+      if (child.type === 'internal') {
+        return `${currentIndent}  ${child.name}: ${iter(child.children, deepIndentSize)}`;
+      }
+      return stringifyLine(child, currentIndentSize);
+    });
 
     return [
       '{',
       ...lines,
-      `${currentIndent}}`,
-    ].join('\n');
-  };
-
-  return iter(value, spacesCount);
-};
-
-const stringifyLine = (node, depth) => {
-  const currentIndent = indent(depth);
-
-  const value = stringify(node.value, depth + 1);
-  let diff;
-  switch (node.type) {
-    case 'added':
-    case 'changed-add':
-      diff = '+';
-      break;
-    case 'deleted':
-    case 'changed-del':
-      diff = '-';
-      break;
-    default:
-      diff = ' ';
-  }
-  return `${currentIndent}${diff} ${node.name}: ${value}`;
-};
-
-export default (tree) => {
-  const iter = (node, depth) => {
-    if (node.type !== 'object' && node.type !== 'root') {
-      return stringifyLine(node, depth);
-    }
-    const deepIndentSize = node.type === 'root' ? depth + 1 : depth + 2;
-    const bracketIndentSize = node.type === 'root' ? depth : depth + 1;
-
-    const name = node.type === 'root' ? '' : `${indent(depth)}  ${node.name}: `;
-
-    const { children } = node;
-    const lines = children.map((child) => iter(child, deepIndentSize));
-
-    return [
-      `${name}{`,
-      ...lines,
-      `${indent(bracketIndentSize)}}`,
+      `${bracketIndent}}`,
     ].join('\n');
   };
 

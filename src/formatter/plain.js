@@ -1,7 +1,4 @@
-import _ from 'lodash';
-
 const kyesJoin = (ancestry, name) => {
-  if (name === 'root') return '';
   if (ancestry === '') return `${name}`;
   return `${ancestry}.${name}`;
 };
@@ -13,35 +10,32 @@ const formatValue = (value) => {
 };
 
 const plainDiff = (property, value, type) => {
-  const newValue = formatValue(value);
   switch (type) {
     case 'added':
-      return `Property '${property}' was added with value: ${newValue}\n`;
+      return `Property '${property}' was added with value: ${formatValue(value)}`;
     case 'deleted':
-      return `Property '${property}' was removed\n`;
-    case 'changed-del':
-      return `Property '${property}' was updated. From ${newValue} to `;
-    case 'changed-add':
-      return `${newValue}\n`;
+      return `Property '${property}' was removed`;
+    case 'changed':
+      return `Property '${property}' was updated. From ${formatValue(value[0])} to ${formatValue(value[1])}`;
+    case 'unchanged':
     default:
   }
-  return '';
+  return [];
 };
 
 export default (tree) => {
-  const iter = (node, ancestry) => {
-    const { name } = node;
-    const newAncestry = kyesJoin(ancestry, name);
-    if (node.type !== 'object' && node.type !== 'root') {
-      if (node.type === 'unchanged') return [];
-      if (_.has(node, 'value')) {
-        return plainDiff(newAncestry, node.value, node.type);
-      }
-      return newAncestry;
-    }
-    const { children } = node;
-    return children.flatMap((child) => iter(child, newAncestry)).join('');
+  const iter = (children, ancestry) => {
+    const lines = children.flatMap((child) => {
+      const { name, type } = child;
+      const newAncestry = kyesJoin(ancestry, name);
+
+      if (type === 'internal') return iter(child.children, newAncestry);
+
+      return plainDiff(newAncestry, child.value, type);
+    });
+
+    return lines.join('\n');
   };
 
-  return iter(tree, '').slice(0, -1);
+  return iter(tree, '');
 };

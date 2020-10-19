@@ -8,15 +8,17 @@ const getFullPath = (file) => path.resolve(process.cwd(), file);
 const readData = (file) => fs.readFileSync(getFullPath(file), 'utf-8');
 
 const parser = (data, extension) => {
-  let parse;
-  if (extension === '.json') {
-    parse = JSON.parse;
-  } else if (extension === '.yaml') {
-    parse = yaml.safeLoad;
-  } else if (extension === '.ini') {
-    parse = ini.parse;
+  const parse = {
+    '.json': JSON.parse,
+    '.yaml': yaml.safeLoad,
+    '.ini': ini.parse,
+  };
+
+  if (extension !== '.json' && extension !== '.yaml' && extension !== '.ini') {
+    throw new Error('Unexpected file');
   }
-  return parse(data);
+
+  return parse[extension](data);
 };
 
 const getDataFromFile = (file) => {
