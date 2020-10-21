@@ -29,7 +29,7 @@ const parser = (data, extension) => {
     case '.ini':
       return normalizeIniData(ini.parse(data));
     default:
-      throw new Error('Unexpected file');
+      throw new Error(`Unexpected extension ${extension}`);
   }
 };
 

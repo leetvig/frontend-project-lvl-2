@@ -8,7 +8,7 @@ export default (tree, format) => {
     json: JSON.stringify,
   };
   if (format !== 'stylish' && format !== 'plain' && format !== 'json') {
-    throw new Error('Unexpected format');
+    throw new Error(`Unexpected format ${format}`);
   }
   return formatter[format](tree);
 };
