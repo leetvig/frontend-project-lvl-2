@@ -7,18 +7,30 @@ const getFullPath = (file) => path.resolve(process.cwd(), file);
 
 const readData = (file) => fs.readFileSync(getFullPath(file), 'utf-8');
 
-const parser = (data, extension) => {
-  const parse = {
-    '.json': JSON.parse,
-    '.yaml': yaml.safeLoad,
-    '.ini': ini.parse,
-  };
-
-  if (extension !== '.json' && extension !== '.yaml' && extension !== '.ini') {
-    throw new Error('Unexpected file');
+const normalizeIniData = (data) => Object.entries(data).reduce((acc, [key, value]) => {
+  if (typeof value === 'object') {
+    acc[key] = normalizeIniData(value);
+    return acc;
   }
+  if (!Number.isNaN(parseFloat(value)) && Number.isFinite(parseFloat(value))) {
+    acc[key] = Number(value);
+    return acc;
+  }
+  acc[key] = value;
+  return acc;
+}, {});
 
-  return parse[extension](data);
+const parser = (data, extension) => {
+  switch (extension) {
+    case '.json':
+      return JSON.parse(data);
+    case '.yaml':
+      return yaml.safeLoad(data);
+    case '.ini':
+      return normalizeIniData(ini.parse(data));
+    default:
+      throw new Error('Unexpected file');
+  }
 };
 
 const getDataFromFile = (file) => {

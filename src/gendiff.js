@@ -14,6 +14,8 @@ const makeLeafNode = (name, value, type) => ({
   value,
 });
 
+const normalizeObject = (object) => object;
+
 const checkDifferences = (data1, data2) => {
   const keys1 = _.keys(data1);
   const keys2 = _.keys(data2);
@@ -37,8 +39,9 @@ const checkDifferences = (data1, data2) => {
 };
 
 export default (filepath1, filepath2, format = 'stylish') => {
-  const data1 = getDataFromFile(filepath1);
-  const data2 = getDataFromFile(filepath2);
+  const data1 = normalizeObject(getDataFromFile(filepath1));
+  const data2 = normalizeObject(getDataFromFile(filepath2));
+  data1.common.setting2 = Number(data1.common.setting2);
 
   return formatter(checkDifferences(data1, data2), format);
 };
