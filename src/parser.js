@@ -24,6 +24,7 @@ const parser = (data, extension) => {
   switch (extension) {
     case '.json':
       return JSON.parse(data);
+    case '.yml':
     case '.yaml':
       return yaml.safeLoad(data);
     case '.ini':

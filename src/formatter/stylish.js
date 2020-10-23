@@ -1,7 +1,9 @@
+import _ from 'lodash';
+
 const indent = (indentSize) => '  '.repeat(indentSize);
 
 const stringify = (value, indentSize) => {
-  if (typeof value !== 'object') {
+  if (typeof value !== 'object' || _.isUndefined(value) || _.isNull(value)) {
     return value.toString();
   }
 
