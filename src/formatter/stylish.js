@@ -4,7 +4,7 @@ const indent = (indentSize) => '  '.repeat(indentSize);
 
 const stringify = (value, indentSize) => {
   if (typeof value !== 'object' || _.isUndefined(value) || _.isNull(value)) {
-    return value.toString();
+    return `${value}`;
   }
 
   const deepIndentSize = indentSize + 2;
