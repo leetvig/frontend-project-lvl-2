@@ -3,7 +3,7 @@ import _ from 'lodash';
 const indent = (indentSize) => '  '.repeat(indentSize);
 
 const stringify = (value, indentSize) => {
-  if (typeof value !== 'object' || _.isUndefined(value) || _.isNull(value)) {
+  if (!_.isObject(value)) {
     return `${value}`;
   }
 
@@ -47,7 +47,7 @@ export default (tree) => {
     const bracketIndent = indent(indentSize);
 
     const lines = children.flatMap((child) => {
-      if (child.type === 'internal') {
+      if (child.type === 'nested') {
         return `${currentIndent}  ${child.name}: ${iter(child.children, deepIndentSize)}`;
       }
       return stringifyLine(child, currentIndentSize);

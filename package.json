@@ -2,9 +2,9 @@
   "name": "frontend-project-lvl-2",
   "version": "0.0.1",
   "description": "Compares two configuration files and shows a difference.",
-  "main": "index.js",
+  "main": "src/differences.js",
   "bin": {
-    "gendiff": "bin/gendiff_cli.js"
+    "gendiff": "bin/gendiff.js"
   },
   "type": "module",
   "engines": {

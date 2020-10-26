@@ -1,11 +1,13 @@
+import _ from 'lodash';
+
 const kyesJoin = (ancestry, name) => {
   if (ancestry === '') return `${name}`;
   return `${ancestry}.${name}`;
 };
 
 const formatValue = (value) => {
-  if (typeof value === 'object') return '[complex value]';
-  if (typeof value === 'string') return `'${value}'`;
+  if (_.isObject(value)) return '[complex value]';
+  if (_.isString(value)) return `'${value}'`;
   return value;
 };
 
@@ -29,7 +31,7 @@ export default (tree) => {
       const { name, type } = child;
       const newAncestry = kyesJoin(ancestry, name);
 
-      if (type === 'internal') return iter(child.children, newAncestry);
+      if (type === 'nested') return iter(child.children, newAncestry);
 
       return plainDiff(newAncestry, child.value, type);
     });
