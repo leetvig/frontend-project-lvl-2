@@ -1,11 +1,5 @@
-import fs from 'fs';
-import path from 'path';
 import yaml from 'js-yaml';
 import ini from 'ini';
-
-const getFullPath = (file) => path.resolve(process.cwd(), file);
-
-const readData = (file) => fs.readFileSync(getFullPath(file), 'utf-8');
 
 const normalizeIniData = (data) => Object.entries(data).reduce((acc, [key, value]) => {
   if (typeof value === 'object') {
@@ -13,7 +7,7 @@ const normalizeIniData = (data) => Object.entries(data).reduce((acc, [key, value
     return acc;
   }
   if (!Number.isNaN(parseFloat(value)) && Number.isFinite(parseFloat(value))) {
-    acc[key] = Number(value);
+    acc[key] = Number(value) === parseFloat(value) ? Number(value) : value;
     return acc;
   }
   acc[key] = value;
@@ -22,23 +16,16 @@ const normalizeIniData = (data) => Object.entries(data).reduce((acc, [key, value
 
 const parser = (data, extension) => {
   switch (extension) {
-    case '.json':
+    case 'json':
       return JSON.parse(data);
-    case '.yml':
-    case '.yaml':
+    case 'yml':
+    case 'yaml':
       return yaml.safeLoad(data);
-    case '.ini':
+    case 'ini':
       return normalizeIniData(ini.parse(data));
     default:
       throw new Error(`Unexpected extension ${extension}`);
   }
 };
 
-const getDataFromFile = (file) => {
-  const fileData = readData(file);
-  const extension = path.extname(file);
-
-  return parser(fileData, extension);
-};
-
-export default getDataFromFile;
+export default parser;

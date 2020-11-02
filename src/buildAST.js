@@ -1,6 +1,4 @@
 import _ from 'lodash';
-import getDataFromFile from './parser.js';
-import formatter from './formatter/index.js';
 
 const makeInternalNode = (name, children = [], type) => ({
   name,
@@ -14,7 +12,7 @@ const makeLeafNode = (name, value, type) => ({
   value,
 });
 
-const checkDifferences = (data1, data2) => {
+const buildAST = (data1, data2) => {
   const keys1 = _.keys(data1);
   const keys2 = _.keys(data2);
   const keys = _.union(keys1, keys2).sort();
@@ -29,16 +27,11 @@ const checkDifferences = (data1, data2) => {
     } if (value1 === value2) {
       return makeLeafNode(key, value1, 'unchanged');
     } if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-      return makeInternalNode(key, checkDifferences(value1, value2), 'nested');
+      return makeInternalNode(key, buildAST(value1, value2), 'nested');
     }
     return makeLeafNode(key, [value1, value2], 'changed');
   });
   return tree;
 };
 
-export default (filepath1, filepath2, format = 'stylish') => {
-  const data1 = getDataFromFile(filepath1);
-  const data2 = getDataFromFile(filepath2);
-
-  return formatter(checkDifferences(data1, data2), format);
-};
+export default buildAST;
