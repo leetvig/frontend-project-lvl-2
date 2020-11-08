@@ -1,16 +1,19 @@
+/* eslint no-useless-escape: "off" */
+
 import yaml from 'js-yaml';
 import ini from 'ini';
+
+const filterInt = (value) => {
+  if (/^(\-|\+)?([0-9]+|Infinity)$/.test(value)) return Number(value);
+  return value;
+};
 
 const normalizeIniData = (data) => Object.entries(data).reduce((acc, [key, value]) => {
   if (typeof value === 'object') {
     acc[key] = normalizeIniData(value);
     return acc;
   }
-  if (!Number.isNaN(parseFloat(value)) && Number.isFinite(parseFloat(value))) {
-    acc[key] = Number(value) === parseFloat(value) ? Number(value) : value;
-    return acc;
-  }
-  acc[key] = value;
+  acc[key] = filterInt(value);
   return acc;
 }, {});
 

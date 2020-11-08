@@ -18,15 +18,18 @@ const buildAST = (data1, data2) => {
   const keys = _.union(keys1, keys2).sort();
 
   const tree = keys.map((key) => {
-    const value1 = _.cloneDeep(data1[key]);
-    const value2 = _.cloneDeep(data2[key]);
+    const value1 = data1[key];
+    const value2 = data2[key];
     if (!keys1.includes(key)) {
       return makeLeafNode(key, value2, 'added');
-    } if (!keys2.includes(key)) {
+    }
+    if (!keys2.includes(key)) {
       return makeLeafNode(key, value1, 'deleted');
-    } if (value1 === value2) {
+    }
+    if (value1 === value2) {
       return makeLeafNode(key, value1, 'unchanged');
-    } if (_.isObject(data1[key]) && _.isObject(data2[key])) {
+    }
+    if (_.isObject(data1[key]) && _.isObject(data2[key])) {
       return makeInternalNode(key, buildAST(value1, value2), 'nested');
     }
     return makeLeafNode(key, [value1, value2], 'changed');

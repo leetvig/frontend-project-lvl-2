@@ -2,63 +2,61 @@ import _ from 'lodash';
 
 const indent = (indentSize) => '  '.repeat(indentSize);
 
-const stringify = (value, indentSize) => {
+const getIndent = (depth, type = '') => {
+  const step = type === 'bracket' ? 0 : 1;
+  const indentSize = depth * 2 + step;
+
+  return indent(indentSize);
+};
+
+const stringify = (value, depth) => {
   if (!_.isObject(value)) {
     return `${value}`;
   }
-
-  const deepIndentSize = indentSize + 2;
-  const currentIndent = indent(indentSize + 1);
-  const bracketIndent = indent(indentSize);
+  const deepDepth = depth + 1;
 
   const lines = Object
     .entries(value)
-    .map(([key, val]) => `${currentIndent}  ${key}: ${stringify(val, deepIndentSize)}`);
+    .map(([key, val]) => `${getIndent(depth)}  ${key}: ${stringify(val, deepDepth)}`);
 
   return [
     '{',
     ...lines,
-    `${bracketIndent}}`,
+    `${getIndent(depth, 'bracket')}}`,
   ].join('\n');
 };
 
-const stringifyLine = (node, indentSize) => {
-  const currentIndent = indent(indentSize);
-  const deepIndentSize = indentSize + 1;
-  const { name, type, value } = node;
-  switch (type) {
-    case 'added':
-      return `${currentIndent}+ ${name}: ${stringify(value, deepIndentSize)}`;
-    case 'deleted':
-      return `${currentIndent}- ${name}: ${stringify(value, deepIndentSize)}`;
-    case 'changed':
-      return `${currentIndent}- ${name}: ${stringify(value[0], deepIndentSize)}\n${currentIndent}+ ${name}: ${stringify(value[1], deepIndentSize)}`;
-    case 'unchanged':
-    default:
-      return `${currentIndent}  ${name}: ${stringify(value, deepIndentSize)}`;
-  }
-};
+const stylish = (tree) => {
+  const iter = (nodes, depth) => {
+    const deepDepth = depth + 1;
 
-export default (tree) => {
-  const iter = (children, indentSize) => {
-    const deepIndentSize = indentSize + 2;
-    const currentIndentSize = indentSize + 1;
-    const currentIndent = indent(currentIndentSize);
-    const bracketIndent = indent(indentSize);
-
-    const lines = children.flatMap((child) => {
-      if (child.type === 'nested') {
-        return `${currentIndent}  ${child.name}: ${iter(child.children, deepIndentSize)}`;
+    const lines = nodes.flatMap((node) => {
+      const {
+        name, type, value, children,
+      } = node;
+      switch (type) {
+        case 'added':
+          return `${getIndent(depth)}+ ${name}: ${stringify(value, deepDepth)}`;
+        case 'deleted':
+          return `${getIndent(depth)}- ${name}: ${stringify(value, deepDepth)}`;
+        case 'changed':
+          return `${getIndent(depth)}- ${name}: ${stringify(value[0], deepDepth)}\n${getIndent(depth)}+ ${name}: ${stringify(value[1], deepDepth)}`;
+        case 'unchanged':
+          return `${getIndent(depth)}  ${name}: ${stringify(value, deepDepth)}`;
+        case 'nested':
+          return `${getIndent(depth)}  ${name}: ${iter(children, deepDepth)}`;
+        default:
+          throw new Error(`Unexpected type ${type}`);
       }
-      return stringifyLine(child, currentIndentSize);
     });
-
     return [
       '{',
       ...lines,
-      `${bracketIndent}}`,
+      `${getIndent(depth, 'bracket')}}`,
     ].join('\n');
   };
 
   return iter(tree, 0);
 };
+
+export default stylish;
