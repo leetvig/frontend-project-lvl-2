@@ -1,4 +1,4 @@
-/* eslint no-useless-escape: "off" */
+/* eslint-disable no-useless-escape, fp/no-mutation */
 
 import yaml from 'js-yaml';
 import ini from 'ini';

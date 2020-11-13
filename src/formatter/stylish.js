@@ -49,6 +49,7 @@ const stylish = (tree) => {
           throw new Error(`Unexpected type ${type}`);
       }
     });
+
     return [
       '{',
       ...lines,

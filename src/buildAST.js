@@ -15,7 +15,7 @@ const makeLeafNode = (name, value, type) => ({
 const buildAST = (data1, data2) => {
   const keys1 = _.keys(data1);
   const keys2 = _.keys(data2);
-  const keys = _.union(keys1, keys2).sort();
+  const keys = _.sortBy(_.union(keys1, keys2));
 
   const tree = keys.map((key) => {
     const value1 = data1[key];

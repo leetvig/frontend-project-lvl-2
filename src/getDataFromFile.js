@@ -2,15 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import parser from './parsers.js';
 
-const getFullPath = (file) => path.resolve(process.cwd(), file);
+const getFullPath = (filePath) => path.resolve(process.cwd(), filePath);
 
-const readData = (file) => fs.readFileSync(getFullPath(file), 'utf-8');
+const readData = (filePath) => fs.readFileSync(getFullPath(filePath), 'utf-8');
 
-const getExtension = (file) => path.extname(file).slice(1);
+const getExtension = (filePath) => path.extname(filePath).slice(1);
 
-const getDataFromFile = (file) => {
-  const fileData = readData(file);
-  const extension = getExtension(file);
+const getDataFromFile = (filePath) => {
+  const fileData = readData(filePath);
+  const extension = getExtension(filePath);
 
   return parser(fileData, extension);
 };

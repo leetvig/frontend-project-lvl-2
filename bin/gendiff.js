@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+/* eslint-disable fp/no-unused-expression */
+
 import program from 'commander';
 import gendiff from '../src/index.js';
 

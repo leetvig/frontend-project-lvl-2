@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-const kyesJoin = (ancestry, name) => {
-  if (ancestry === '') return `${name}`;
-  return `${ancestry}.${name}`;
+const keysJoin = (key, name) => {
+  if (key === '') return `${name}`;
+  return `${key}.${name}`;
 };
 
 const formatValue = (value) => {
@@ -26,14 +26,14 @@ const plainDiff = (property, value, type) => {
 };
 
 export default (tree) => {
-  const iter = (children, ancestry) => {
+  const iter = (children, key) => {
     const lines = children.flatMap((child) => {
       const { name, type } = child;
-      const newAncestry = kyesJoin(ancestry, name);
+      const newKey = keysJoin(key, name);
 
-      if (type === 'nested') return iter(child.children, newAncestry);
+      if (type === 'nested') return iter(child.children, newKey);
 
-      return plainDiff(newAncestry, child.value, type);
+      return plainDiff(newKey, child.value, type);
     });
 
     return lines.join('\n');

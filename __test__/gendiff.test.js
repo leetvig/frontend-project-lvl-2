@@ -1,4 +1,9 @@
-/* eslint no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }] */
+/*
+  eslint no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
+  fp/no-let: 'off',
+  fp/no-unused-expression: 'off',
+  fp/no-mutation: 'off'
+*/
 
 import {
   test, expect, beforeAll, describe,
