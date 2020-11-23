@@ -11,29 +11,32 @@ const formatValue = (value) => {
   return value;
 };
 
-const plainDiff = (property, value, type) => {
+const plainDiff = (property, type, oldValue, newValue) => {
   switch (type) {
     case 'added':
-      return `Property '${property}' was added with value: ${formatValue(value)}`;
+      return `Property '${property}' was added with value: ${formatValue(newValue)}`;
     case 'deleted':
       return `Property '${property}' was removed`;
     case 'changed':
-      return `Property '${property}' was updated. From ${formatValue(value[0])} to ${formatValue(value[1])}`;
+      return `Property '${property}' was updated. From ${formatValue(oldValue)} to ${formatValue(newValue)}`;
     case 'unchanged':
+      return [];
     default:
+      throw new Error(`Unexpected type ${type}`);
   }
-  return [];
 };
 
 export default (tree) => {
-  const iter = (children, key) => {
-    const lines = children.flatMap((child) => {
-      const { name, type } = child;
+  const iter = (nodes, key) => {
+    const lines = nodes.flatMap((node) => {
+      const {
+        name, type, children, oldValue, newValue,
+      } = node;
       const newKey = keysJoin(key, name);
 
-      if (type === 'nested') return iter(child.children, newKey);
+      if (type === 'nested') return iter(children, newKey);
 
-      return plainDiff(newKey, child.value, type);
+      return plainDiff(newKey, type, oldValue, newValue);
     });
 
     return lines.join('\n');

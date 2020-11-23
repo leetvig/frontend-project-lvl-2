@@ -1,15 +1,16 @@
 import _ from 'lodash';
 
-const makeInternalNode = (name, children = [], type) => ({
+const makeInternalNode = (name, type, children = []) => ({
   name,
   type,
   children,
 });
 
-const makeLeafNode = (name, value, type) => ({
+const makeLeafNode = (name, type, oldValue, newValue) => ({
   name,
   type,
-  value,
+  oldValue,
+  newValue,
 });
 
 const buildAST = (data1, data2) => {
@@ -18,21 +19,21 @@ const buildAST = (data1, data2) => {
   const keys = _.sortBy(_.union(keys1, keys2));
 
   const tree = keys.map((key) => {
-    const value1 = data1[key];
-    const value2 = data2[key];
+    const oldValue = data1[key];
+    const newValue = data2[key];
     if (!keys1.includes(key)) {
-      return makeLeafNode(key, value2, 'added');
+      return makeLeafNode(key, 'added', undefined, newValue);
     }
     if (!keys2.includes(key)) {
-      return makeLeafNode(key, value1, 'deleted');
+      return makeLeafNode(key, 'deleted', oldValue, undefined);
     }
-    if (value1 === value2) {
-      return makeLeafNode(key, value1, 'unchanged');
+    if (oldValue === newValue) {
+      return makeLeafNode(key, 'unchanged', oldValue, undefined);
     }
     if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-      return makeInternalNode(key, buildAST(value1, value2), 'nested');
+      return makeInternalNode(key, 'nested', buildAST(oldValue, newValue));
     }
-    return makeLeafNode(key, [value1, value2], 'changed');
+    return makeLeafNode(key, 'changed', oldValue, newValue);
   });
   return tree;
 };

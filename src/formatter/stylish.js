@@ -32,17 +32,17 @@ const stylish = (tree) => {
 
     const lines = nodes.flatMap((node) => {
       const {
-        name, type, value, children,
+        name, type, newValue, oldValue, children,
       } = node;
       switch (type) {
         case 'added':
-          return `${getIndent(depth)}+ ${name}: ${stringify(value, deepDepth)}`;
+          return `${getIndent(depth)}+ ${name}: ${stringify(newValue, deepDepth)}`;
         case 'deleted':
-          return `${getIndent(depth)}- ${name}: ${stringify(value, deepDepth)}`;
+          return `${getIndent(depth)}- ${name}: ${stringify(oldValue, deepDepth)}`;
         case 'changed':
-          return `${getIndent(depth)}- ${name}: ${stringify(value[0], deepDepth)}\n${getIndent(depth)}+ ${name}: ${stringify(value[1], deepDepth)}`;
+          return `${getIndent(depth)}- ${name}: ${stringify(oldValue, deepDepth)}\n${getIndent(depth)}+ ${name}: ${stringify(newValue, deepDepth)}`;
         case 'unchanged':
-          return `${getIndent(depth)}  ${name}: ${stringify(value, deepDepth)}`;
+          return `${getIndent(depth)}  ${name}: ${stringify(oldValue, deepDepth)}`;
         case 'nested':
           return `${getIndent(depth)}  ${name}: ${iter(children, deepDepth)}`;
         default:

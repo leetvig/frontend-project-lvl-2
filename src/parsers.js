@@ -1,5 +1,3 @@
-/* eslint-disable no-useless-escape, fp/no-mutation */
-
 import yaml from 'js-yaml';
 import ini from 'ini';
 
@@ -8,17 +6,17 @@ const filterInt = (value) => {
   return value;
 };
 
-const normalizeIniData = (data) => Object.entries(data).reduce((acc, [key, value]) => {
+const normalizeIniData = (data) => Object.entries(data).reduce((acc, [name, value]) => {
   if (typeof value === 'object') {
-    acc[key] = normalizeIniData(value);
-    return acc;
+    const newObject = normalizeIniData(value);
+    return { ...acc, [name]: newObject };
   }
-  acc[key] = filterInt(value);
-  return acc;
+  const newValue = filterInt(value);
+  return { ...acc, [name]: newValue };
 }, {});
 
-const parser = (data, extension) => {
-  switch (extension) {
+const parser = (data, format) => {
+  switch (format) {
     case 'json':
       return JSON.parse(data);
     case 'yml':
@@ -27,7 +25,7 @@ const parser = (data, extension) => {
     case 'ini':
       return normalizeIniData(ini.parse(data));
     default:
-      throw new Error(`Unexpected extension ${extension}`);
+      throw new Error(`Unexpected format ${format}`);
   }
 };
 
