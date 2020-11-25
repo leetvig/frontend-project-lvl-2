@@ -1,5 +1,5 @@
 {
-  "name": "frontend-project-lvl2",
+  "name": "@leetvig/frontend-project-lvl-2",
   "version": "0.0.1",
   "description": "Compares two configuration files and shows a difference.",
   "main": "src/index.js",

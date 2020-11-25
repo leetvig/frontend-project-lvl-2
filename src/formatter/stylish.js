@@ -1,62 +1,46 @@
 import _ from 'lodash';
 
-const indent = (indentSize) => '  '.repeat(indentSize);
-
-const getIndent = (depth, type = '') => {
-  const step = type === 'bracket' ? 0 : 1;
-  const indentSize = depth * 2 + step;
-
-  return indent(indentSize);
-};
+const indent = (depth, spaceCount = 4) => ' '.repeat(depth * spaceCount - 2);
 
 const stringify = (value, depth) => {
   if (!_.isObject(value)) {
     return `${value}`;
   }
-  const deepDepth = depth + 1;
 
   const lines = Object
     .entries(value)
-    .map(([key, val]) => `${getIndent(depth)}  ${key}: ${stringify(val, deepDepth)}`);
+    .map(([key, val]) => `${indent(depth + 1)}  ${key}: ${stringify(val, depth + 1)}`);
 
   return [
     '{',
     ...lines,
-    `${getIndent(depth, 'bracket')}}`,
+    `${indent(depth)}  }`,
   ].join('\n');
 };
 
 const stylish = (tree) => {
-  const iter = (nodes, depth) => {
-    const deepDepth = depth + 1;
-
-    const lines = nodes.flatMap((node) => {
-      const {
-        name, type, newValue, oldValue, children,
-      } = node;
-      switch (type) {
-        case 'added':
-          return `${getIndent(depth)}+ ${name}: ${stringify(newValue, deepDepth)}`;
-        case 'deleted':
-          return `${getIndent(depth)}- ${name}: ${stringify(oldValue, deepDepth)}`;
-        case 'changed':
-          return `${getIndent(depth)}- ${name}: ${stringify(oldValue, deepDepth)}\n${getIndent(depth)}+ ${name}: ${stringify(newValue, deepDepth)}`;
-        case 'unchanged':
-          return `${getIndent(depth)}  ${name}: ${stringify(oldValue, deepDepth)}`;
-        case 'nested':
-          return `${getIndent(depth)}  ${name}: ${iter(children, deepDepth)}`;
-        default:
-          throw new Error(`Unexpected type ${type}`);
-      }
-    });
-
-    return [
-      '{',
-      ...lines,
-      `${getIndent(depth, 'bracket')}}`,
-    ].join('\n');
+  const iter = (node, depth) => {
+    const {
+      name, type, newValue, oldValue, children,
+    } = node;
+    const lines = children && children.flatMap((child) => iter(child, depth + 1));
+    switch (type) {
+      case 'root':
+        return `{\n${lines.join('\n')}\n}`;
+      case 'added':
+        return `${indent(depth)}+ ${name}: ${stringify(newValue, depth)}`;
+      case 'deleted':
+        return `${indent(depth)}- ${name}: ${stringify(oldValue, depth)}`;
+      case 'changed':
+        return `${indent(depth)}- ${name}: ${stringify(oldValue, depth)}\n${indent(depth)}+ ${name}: ${stringify(newValue, depth)}`;
+      case 'unchanged':
+        return `${indent(depth)}  ${name}: ${stringify(oldValue, depth)}`;
+      case 'nested':
+        return `${indent(depth)}  ${name}: {\n${lines.join('\n')}\n${indent(depth)}  }`;
+      default:
+        throw new Error(`Unexpected type ${type}`);
+    }
   };
-
   return iter(tree, 0);
 };
 

@@ -1,18 +1,5 @@
 import _ from 'lodash';
 
-const makeInternalNode = (name, type, children = []) => ({
-  name,
-  type,
-  children,
-});
-
-const makeLeafNode = (name, type, oldValue, newValue) => ({
-  name,
-  type,
-  oldValue,
-  newValue,
-});
-
 const buildAST = (data1, data2) => {
   const keys1 = _.keys(data1);
   const keys2 = _.keys(data2);
@@ -22,20 +9,25 @@ const buildAST = (data1, data2) => {
     const oldValue = data1[key];
     const newValue = data2[key];
     if (!keys1.includes(key)) {
-      return makeLeafNode(key, 'added', undefined, newValue);
+      return { name: key, type: 'added', newValue };
     }
     if (!keys2.includes(key)) {
-      return makeLeafNode(key, 'deleted', oldValue, undefined);
+      return { name: key, type: 'deleted', oldValue };
     }
     if (oldValue === newValue) {
-      return makeLeafNode(key, 'unchanged', oldValue, undefined);
+      return { name: key, type: 'unchanged', oldValue };
     }
     if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-      return makeInternalNode(key, 'nested', buildAST(oldValue, newValue));
+      return { name: key, type: 'nested', children: buildAST(oldValue, newValue) };
     }
-    return makeLeafNode(key, 'changed', oldValue, newValue);
+    return {
+      name: key, type: 'changed', oldValue, newValue,
+    };
   });
   return tree;
 };
 
-export default buildAST;
+export default (data1, data2) => ({
+  type: 'root',
+  children: buildAST(data1, data2),
+});

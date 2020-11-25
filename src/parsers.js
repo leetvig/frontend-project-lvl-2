@@ -1,19 +1,12 @@
 import yaml from 'js-yaml';
 import ini from 'ini';
+import _ from 'lodash';
 
-const filterInt = (value) => {
-  if (/^(\-|\+)?([0-9]+|Infinity)$/.test(value)) return Number(value);
-  return value;
-};
-
-const normalizeIniData = (data) => Object.entries(data).reduce((acc, [name, value]) => {
-  if (typeof value === 'object') {
-    const newObject = normalizeIniData(value);
-    return { ...acc, [name]: newObject };
-  }
-  const newValue = filterInt(value);
-  return { ...acc, [name]: newValue };
-}, {});
+const normalizeIni = (obj) => _.mapValues(obj, (value) => {
+  if (_.isObject(value)) return normalizeIni(value);
+  const parsedValue = parseFloat(value);
+  return _.isNaN(parsedValue) ? value : parsedValue;
+});
 
 const parser = (data, format) => {
   switch (format) {
@@ -23,9 +16,9 @@ const parser = (data, format) => {
     case 'yaml':
       return yaml.safeLoad(data);
     case 'ini':
-      return normalizeIniData(ini.parse(data));
+      return normalizeIni(ini.parse(data));
     default:
-      throw new Error(`Unexpected format ${format}`);
+      throw new Error(`Unexpected extension ${format}`);
   }
 };
 

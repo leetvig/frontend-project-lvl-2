@@ -1,13 +1,6 @@
-/*
-  eslint no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
-  fp/no-let: 'off',
-  fp/no-unused-expression: 'off',
-  fp/no-mutation: 'off'
-*/
+/* eslint no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }] */
 
-import {
-  test, expect, beforeAll, describe,
-} from '@jest/globals';
+import { test, expect } from '@jest/globals';
 import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -19,19 +12,16 @@ const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-let expected;
+const expectedStylish = readFile('exepted_stylish.txt');
+const expectedPlain = readFile('exepted_plain.txt');
+const expectedJson = readFile('exepted_json.txt');
 
-const formats = ['stylish', 'plain', 'json'];
-const extensions = ['json', 'yaml', 'ini'];
+const formats = ['json', 'yaml', 'ini'];
 
-describe.each(formats)('%s format', (format) => {
-  beforeAll(() => {
-    expected = readFile(`exepted_${format}.txt`);
-  });
-
-  test.each(extensions)('%s diff', (extension) => {
-    const filepath1 = getFixturePath(`file1.${extension}`);
-    const filepath2 = getFixturePath(`file2.${extension}`);
-    expect(gendiff(filepath1, filepath2, format)).toEqual(expected);
-  });
+test.each(formats)('%s diff', (format) => {
+  const filepath1 = getFixturePath(`file1.${format}`);
+  const filepath2 = getFixturePath(`file2.${format}`);
+  expect(gendiff(filepath1, filepath2)).toEqual(expectedStylish);
+  expect(gendiff(filepath1, filepath2, 'plain')).toEqual(expectedPlain);
+  expect(gendiff(filepath1, filepath2, 'json')).toEqual(expectedJson);
 });
