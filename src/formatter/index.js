@@ -1,14 +1,20 @@
 import stylish from './stylish.js';
 import plain from './plain.js';
 
-export default (tree, format) => {
-  const formatter = {
-    stylish,
-    plain,
-    json: JSON.stringify,
-  };
-  if (format !== 'stylish' && format !== 'plain' && format !== 'json') {
-    throw new Error(`Unexpected format ${format}`);
+const getFormatter = (format) => {
+  switch (format) {
+    case 'stylish':
+      return stylish;
+    case 'plain':
+      return plain;
+    case 'json':
+      return JSON.stringify;
+    default:
+      throw new Error(`Unexpected format ${format}`);
   }
-  return formatter[format](tree);
+};
+
+export default (tree, format) => {
+  const formatter = getFormatter(format);
+  return formatter(tree);
 };

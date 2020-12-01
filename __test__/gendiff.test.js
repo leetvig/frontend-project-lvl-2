@@ -1,6 +1,5 @@
 /*
-  eslint no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
-  fp/no-unused-expression: 'off'
+  eslint no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
 */
 
 import { test, expect } from '@jest/globals';
