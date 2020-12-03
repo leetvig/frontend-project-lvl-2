@@ -1,7 +1,3 @@
-/*
-  eslint no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
-*/
-
 import { test, expect } from '@jest/globals';
 import fs from 'fs';
 import path, { dirname } from 'path';

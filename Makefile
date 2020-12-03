@@ -1,3 +1,6 @@
+link:
+	npm link
+
 install:
 	npm install
 
